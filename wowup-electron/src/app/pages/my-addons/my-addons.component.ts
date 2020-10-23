@@ -7,7 +7,6 @@ import {
   OnDestroy,
   OnInit,
   ViewChild,
-  ViewContainerRef,
 } from "@angular/core";
 import { WowClientType } from "../../models/warcraft/wow-client-type";
 import { map } from "rxjs/operators";
@@ -36,6 +35,7 @@ import {
   AddonDetailComponent,
   AddonDetailModel,
 } from "app/components/addon-detail/addon-detail.component";
+import { TranslateService } from "@ngx-translate/core";
 
 @Component({
   selector: "app-my-addons",
@@ -61,7 +61,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
   private isSelectedTab: boolean = false;
   private sortedListItems: AddonViewModel[] = [];
 
-  public spinnerMessage = "Loading...";
+  public spinnerMessage = "";
 
   contextMenuPosition = { x: "0px", y: "0px" };
 
@@ -119,9 +119,9 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
     private _ngZone: NgZone,
     private _dialog: MatDialog,
     private _cdRef: ChangeDetectorRef,
+    private _translateService: TranslateService,
     public electronService: ElectronService,
     public overlay: Overlay,
-    public viewContainerRef: ViewContainerRef,
     public warcraftService: WarcraftService
   ) {
     _sessionService.selectedHomeTab$.subscribe((tabIndex) => {
@@ -217,6 +217,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
   }
 
   public onRefresh() {
+    this.spinnerMessage = this._translateService.instant('PAGES.MY_ADDONS.SPINNER.LOADING');
     this.loadAddons(this.selectedClient);
   }
 
@@ -405,8 +406,8 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
   public onReScan() {
     const dialogRef = this._dialog.open(ConfirmDialogComponent, {
       data: {
-        title: `Start re-scan?`,
-        message: `Doing a re-scan may reset the addon information and attempt to re-guess what you have installed. This operation can take a moment.`,
+        title: this._translateService.instant('PAGES.MY_ADDONS.RESCAN_FOLDERS_CONFIRMATION_TITLE'),
+        message: this._translateService.instant('PAGES.MY_ADDONS.RESCAN_FOLDERS_CONFIRMATION_DESCRIPTION'),
       },
     });
 
@@ -548,7 +549,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
 
   private async updateAllWithSpinner(...clientTypes: WowClientType[]) {
     this.isBusy = true;
-    this.spinnerMessage = "Gathering addons...";
+    this.spinnerMessage = this._translateService.instant('PAGES.MY_ADDONS.SPINNER.GATHERING_ADDONS')
 
     try {
       let updatedCt = 0;
@@ -563,13 +564,25 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
         .filter((listItem) => listItem.needsUpdate || listItem.needsInstall)
         .map((listItem) => listItem.addon);
 
-      this.spinnerMessage = `Updating ${updatedCt}/${addons.length}`;
+      if (addons.length === 0) {
+        this.loadAddons(this.selectedClient);
+        return;
+      }
+
+      this.spinnerMessage = this._translateService.instant('PAGES.MY_ADDONS.SPINNER.UPDATING', {
+        updateCount : updatedCt,
+        addonCount : addons.length,
+      });
 
       for (let addon of addons) {
         updatedCt += 1;
-        this.spinnerMessage = `Updating ${updatedCt}/${
-          addons.length
-        }\n${getEnumName(WowClientType, addon.clientType)}: ${addon.name}`;
+
+        this.spinnerMessage = this._translateService.instant('PAGES.MY_ADDONS.SPINNER.UPDATING_WITH_ADDON_NAME', {
+          updateCount : updatedCt,
+          addonCount : addons.length,
+          clientType : getEnumName(WowClientType, addon.clientType),
+          addonName : addon.name,
+        });
 
         await this.addonService.installAddon(addon.id);
       }
@@ -664,18 +677,18 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
 
   private getInstallStateText(installState: AddonInstallState) {
     switch (installState) {
-      case AddonInstallState.Pending:
-        return "Pending";
-      case AddonInstallState.Downloading:
-        return "Downloading";
       case AddonInstallState.BackingUp:
-        return "BackingUp";
-      case AddonInstallState.Installing:
-        return "Installing";
+        return this._translateService.instant("COMMON.ADDON_STATUS.BACKINGUP");
       case AddonInstallState.Complete:
-        return "Complete";
+        return this._translateService.instant("COMMON.ADDON_STATE.UPTODATE");
+      case AddonInstallState.Downloading:
+        return this._translateService.instant("COMMON.ADDON_STATUS.DOWNLOADING");
+      case AddonInstallState.Installing:
+        return this._translateService.instant("COMMON.ADDON_STATUS.INSTALLING");
+      case AddonInstallState.Pending:
+        return this._translateService.instant("COMMON.ADDON_STATUS.PENDING");
       default:
-        return "Unknown";
+        return "";
     }
   }
 }
