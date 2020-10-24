@@ -114,7 +114,8 @@
         "LATEST_VERSION_COLUMN_HEADER": "Aktuelle Version",
         "PROVIDER_COLUMN_HEADER": "Anbieter",
         "RELEASED_AT_COLUMN_HEADER": "Erscheinungsdatum",
-        "STATUS_COLUMN_HEADER": "Status"
+        "STATUS_COLUMN_HEADER": "Status",
+        "UPDATED_AT_COLUMN_HEADER": "Updated At"
       },
       "UPDATE_ALL_BUTTON": "Alle aktualisieren",
       "UPDATE_ALL_BUTTON_TOOLTIP": "Alle Addons für diesen Client aktualisieren",

@@ -114,7 +114,8 @@
         "LATEST_VERSION_COLUMN_HEADER": "Ultima versão",
         "PROVIDER_COLUMN_HEADER": "Provedor",
         "RELEASED_AT_COLUMN_HEADER": "RELEASED_AT_COLUMN_HEADER",
-        "STATUS_COLUMN_HEADER": "Estado"
+        "STATUS_COLUMN_HEADER": "Estado",
+        "UPDATED_AT_COLUMN_HEADER": "Updated At"
       },
       "UPDATE_ALL_BUTTON": "Actualizar todos",
       "UPDATE_ALL_BUTTON_TOOLTIP": "Atualizar todos os Addons",
