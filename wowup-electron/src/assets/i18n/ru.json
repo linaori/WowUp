@@ -115,7 +115,7 @@
         "PROVIDER_COLUMN_HEADER": "Источник",
         "RELEASED_AT_COLUMN_HEADER": "Выпущена в",
         "STATUS_COLUMN_HEADER": "Статус",
-        "UPDATED_AT_COLUMN_HEADER": "Updated At"
+        "UPDATED_AT_COLUMN_HEADER": "Обновлена"
       },
       "UPDATE_ALL_BUTTON": "Обновить всё",
       "UPDATE_ALL_BUTTON_TOOLTIP": "Обновить все модификации для этого клиента",
